@@ -19,77 +19,94 @@ body{background:radial-gradient(circle at top,#1a2a4a,#05070a);color:white;min-h
 @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
 .bar{height:6px;background:#222;border-radius:10px;overflow:hidden;margin:10px 0}
 .bar-fill{height:100%;background:linear-gradient(90deg,#00ff88,#00ccff);transition:0.5s}
-#preview img{width:100%;border-radius:15px;margin-top:12px}
+#preview img{width:100%;border-radius:15px;margin-top:12px;display:block}
 </style>
 </head>
 <body>
 <div class="logo">C PHOTO HD</div>
-<p style="text-align:center;color:#aaa;font-size:12px">🔥 IA ULTRA PRO</p>
+<p style="text-align:center;color:#aaa;font-size:12px">🔥 IA ULTRA PRO - Lubumbashi</p>
 <div class="card">
 <div style="display:flex;justify-content:space-between"><span id="essaisText"></span><span style="color:#00ff88;font-size:11px">● En ligne</span></div>
 <div class="bar"><div id="barFill" class="bar-fill"></div></div>
-<label for="upload" class="upload-zone" id="zone"><div style="font-size:38px">📸</div><b>Clique pour ta photo floue</b></label>
+<label for="upload" class="upload-zone" id="zone"><div style="font-size:38px">📸</div><b>Clique pour ta photo floue</b><div style="font-size:11px;color:#aaa">Devient HD en 3 sec</div></label>
 <input type="file" id="upload" accept="image/*" style="display:none">
 <div id="preview"></div>
 <button id="hdBtn" class="btn btn-hd" style="display:none">✨ PASSER EN HD</button>
-<button id="dlBtn" class="btn btn-dl">⬇️ TÉLÉCHARGER HD</button>
-<a id="payBtn" href="https://pay.fondeka.com/p/VYQUQLD2Z" target="_blank" class="btn btn-pay">🔒 DÉBLOQUER - 0.60$</a>
+<button id="dlBtn" class="btn btn-dl">⬇️ TÉLÉCHARGER PHOTO HD</button>
+<a id="payBtn" href="https://pay.fondeka.com/p/VYQUQLD2Z" target="_blank" class="btn btn-pay">🔒 DÉBLOQUER - 0.60$ (1 386 FC)</a>
 <div style="margin-top:18px;border-top:1px solid rgba(255,255,255,0.1);padding-top:15px">
-<p style="font-size:13px;font-weight:700">💰 1 PARTAGE = 1 ESSAI!</p>
+<p style="font-size:13px;font-weight:700">💰 1 PARTAGE = 1 ESSAI GRATUIT!</p>
 <button class="btn btn-ref" id="shareBtn">📲 PARTAGER SUR WHATSAPP</button>
-<p id="refLink" style="font-size:10px;color:#00ff88;margin-top:8px;word-break:break-all"></p>
 </div>
 </div>
 <script>
-const siteBase = "https://48-lang.github.io/photo-HD.html/";
+const siteLink = "https://48-lang.github.io/photo-HD.html/";
 let essais = localStorage.getItem('essais')? parseInt(localStorage.getItem('essais')) : 3;
 function updateUI(){
- document.getElementById('essaisText').innerText = "🎁 "+essais+" Essais";
+ document.getElementById('essaisText').innerText = "🎁 "+essais+" Essais restants";
  document.getElementById('barFill').style.width = (essais/3*100)+"%";
  document.getElementById('payBtn').style.display = essais<=0? "block":"none";
- if(essais<=0) document.getElementById('essaisText').innerText="🔒 Essais épuisés";
+ if(essais<=0){ document.getElementById('essaisText').innerText="🔒 Essais épuisés"; document.getElementById('barFill').style.width="0%"; }
 }
 updateUI();
 let currentImg=null;
+let originalFile=null;
 document.getElementById('upload').addEventListener('change', e=>{
  let file=e.target.files[0]; if(!file) return;
- currentImg=document.createElement('img'); currentImg.src=URL.createObjectURL(file);
- document.getElementById('preview').innerHTML=""; document.getElementById('preview').appendChild(currentImg);
- document.getElementById('zone').innerHTML="✅ Photo prête"; document.getElementById('hdBtn').style.display="block";
- document.getElementById('dlBtn').style.display="none";
+ originalFile=file;
+ currentImg = new Image();
+ currentImg.onload = ()=>{
+   document.getElementById('preview').innerHTML="";
+   document.getElementById('preview').appendChild(currentImg);
+   document.getElementById('zone').innerHTML="✅ Photo prête - "+Math.round(file.size/1024)+" Ko";
+   document.getElementById('hdBtn').style.display="block";
+   document.getElementById('dlBtn').style.display="none";
+ };
+ currentImg.src = URL.createObjectURL(file);
 });
 document.getElementById('hdBtn').onclick=()=>{
  if(essais<=0){ updateUI(); return; }
- let btn=document.getElementById('hdBtn'); btn.innerText="⏳ IA..."; btn.disabled=true;
+ let btn=document.getElementById('hdBtn'); btn.innerText="⏳ IA TRAVAILLE..."; btn.disabled=true;
  setTimeout(()=>{
    currentImg.style.filter="contrast(1.4) saturate(1.3) brightness(1.05)";
    essais--; localStorage.setItem('essais',essais); updateUI();
    btn.innerText="✅ C'EST HD!"; document.getElementById('dlBtn').style.display="block";
-   setTimeout(()=>{ btn.innerText="✨ PASSER EN HD"; btn.disabled=false; },1200);
- },1000);
+   setTimeout(()=>{ btn.innerText="✨ PASSER EN HD"; btn.disabled=false; if(essais>0) btn.style.display="block"; },1200);
+ },800);
 };
+// BOUTON TÉLÉCHARGER RÉPARÉ POUR ANDROID
 document.getElementById('dlBtn').onclick=()=>{
- let c=document.createElement('canvas'),x=c.getContext('2d');
- c.width=currentImg.naturalWidth*2; c.height=currentImg.naturalHeight*2;
- x.filter="contrast(1.4) saturate(1.3) brightness(1.05)"; x.drawImage(currentImg,0,0,c.width,c.height);
- let a=document.createElement('a'); a.href=c.toDataURL('image/jpeg',1.0); a.download="C-Photo-HD-4K.jpg"; a.click();
+ if(!currentImg){ alert("Choisis d'abord une photo!"); return; }
+ try{
+   let canvas = document.createElement('canvas');
+   let ctx = canvas.getContext('2d');
+   let w = currentImg.naturalWidth || currentImg.width || 800;
+   let h = currentImg.naturalHeight || currentImg.height || 800;
+   canvas.width = w * 2;
+   canvas.height = h * 2;
+   ctx.filter = "contrast(1.4) saturate(1.3) brightness(1.05)";
+   ctx.drawImage(currentImg, 0, 0, canvas.width, canvas.height);
+   let dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+   let a = document.createElement('a');
+   a.href = dataUrl;
+   a.download = "C-Photo-HD-4K-" + Date.now() + ".jpg";
+   document.body.appendChild(a);
+   a.click();
+   document.body.removeChild(a);
+   if(navigator.vibrate) navigator.vibrate(100);
+ } catch(err){
+   alert("Erreur: "+err.message+" - Essaie avec une autre photo");
+ }
 };
+// SYSTÈME SIMPLE SANS REF - TON IDÉE GÉNIALE
 document.getElementById('shareBtn').onclick=()=>{
-  essais++; localStorage.setItem('essais',essais); updateUI();
-  let lienMoche = siteBase + "?ref=" + Date.now();
-  document.getElementById('refLink').innerText = lienMoche;
-  let msg = "🔥 J'ai rendu ma photo floue en HD 4K avec C Photo HD! Teste gratuit ici: " + lienMoche;
-  window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+  essais++;
+  localStorage.setItem('essais',essais);
+  updateUI();
+  alert("🎉 +1 Essai débloqué!");
+  let message = "🔥 Mec regarde! J'ai rendu ma photo floue en HD 4K avec C Photo HD! Teste gratuit ici: " + siteLink;
+  window.open("https://wa.me/?text=" + encodeURIComponent(message), "_blank");
 };
-document.getElementById('refLink').innerText = siteBase + "?ref=" + Date.now();
-
-// LE CODE MAGIQUE QUI NETTOIE LE LIEN MOCHE
-let params = new URLSearchParams(window.location.search);
-if(params.get('ref')){
-  setTimeout(()=>{
-    window.history.replaceState({}, document.title, siteBase);
-  }, 1000);
-}
 </script>
 </body>
 </html>
