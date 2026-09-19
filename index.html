@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>C Photo HD Pro - Raph Man</title>
+<title>C Photo HD Pro - Lubumbashi</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap" rel="stylesheet">
 <style>
 *{font-family:'Poppins',sans-serif;box-sizing:border-box;margin:0;padding:0}
@@ -11,7 +11,7 @@ body{background:radial-gradient(circle at top,#1a2a4a,#05070a);color:white;min-h
 .logo{font-size:32px;font-weight:900;background:linear-gradient(90deg,#00ff88,#00ccff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center}
 .card{max-width:430px;margin:20px auto;background:rgba(255,255,255,0.08);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.15);border-radius:25px;padding:22px}
 .upload-zone{border:2px dashed #00ff88;border-radius:20px;padding:28px;text-align:center;background:rgba(0,255,136,0.05);cursor:pointer;display:block}
-.btn{width:100%;padding:16px;border:none;border-radius:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:12px;text-align:center;text-decoration:none;display:block}
+.btn{width:100%;padding:16px;border:none;border-radius:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:12px;display:block;text-align:center;text-decoration:none}
 .btn-hd{background:#00ff88;color:black}
 .btn-dl{background:#00ccff;color:black;display:none}
 .btn-pay{background:linear-gradient(90deg,#ffcc00,#ff9900);color:black;display:none;animation:pulse 1.2s infinite}
@@ -24,57 +24,41 @@ body{background:radial-gradient(circle at top,#1a2a4a,#05070a);color:white;min-h
 </head>
 <body>
 <div class="logo">C PHOTO HD</div>
-<p style="text-align:center;color:#aaa;font-size:13px;margin-top:5px">🔥 IA ULTRA PRO - Lubumbashi</p>
-
+<p style="text-align:center;color:#aaa;font-size:12px">🔥 IA ULTRA PRO</p>
 <div class="card">
-<div style="display:flex;justify-content:space-between">
-<span id="essaisText"></span>
-<span style="color:#00ff88;font-size:12px">● En ligne</span>
-</div>
+<div style="display:flex;justify-content:space-between"><span id="essaisText"></span><span style="color:#00ff88;font-size:11px">● En ligne</span></div>
 <div class="bar"><div id="barFill" class="bar-fill"></div></div>
-
-<label for="upload" class="upload-zone" id="zone">
-<div style="font-size:38px">📸</div>
-<b>Clique pour ta photo floue</b>
-</label>
+<label for="upload" class="upload-zone" id="zone"><div style="font-size:38px">📸</div><b>Clique pour ta photo floue</b></label>
 <input type="file" id="upload" accept="image/*" style="display:none">
 <div id="preview"></div>
-
 <button id="hdBtn" class="btn btn-hd" style="display:none">✨ PASSER EN HD</button>
-<button id="dlBtn" class="btn btn-dl">⬇️ TÉLÉCHARGER PHOTO HD</button>
+<button id="dlBtn" class="btn btn-dl">⬇️ TÉLÉCHARGER HD</button>
 <a id="payBtn" href="https://pay.fondeka.com/p/VYQUQLD2Z" target="_blank" class="btn btn-pay">🔒 DÉBLOQUER - 0.60$</a>
-
 <div style="margin-top:18px;border-top:1px solid rgba(255,255,255,0.1);padding-top:15px">
-<p style="font-size:13px;font-weight:700">💰 GAGNE 1 ESSAI PAR AMI!</p>
+<p style="font-size:13px;font-weight:700">💰 1 PARTAGE = 1 ESSAI!</p>
 <button class="btn btn-ref" id="shareBtn">📲 PARTAGER SUR WHATSAPP</button>
 <p id="refLink" style="font-size:10px;color:#00ff88;margin-top:8px;word-break:break-all"></p>
 </div>
 </div>
-
 <script>
 const siteBase = "https://48-lang.github.io/photo-HD.html/";
 let essais = localStorage.getItem('essais')? parseInt(localStorage.getItem('essais')) : 3;
-if(new URLSearchParams(window.location.search).get('ref')){
-  essais++; localStorage.setItem('essais', essais);
-  alert("🎁 +1 Essai gratuit grâce à ton ami!");
-}
 function updateUI(){
  document.getElementById('essaisText').innerText = "🎁 "+essais+" Essais";
  document.getElementById('barFill').style.width = (essais/3*100)+"%";
- document.getElementById('payBtn').style.display = essais<=0? "block" : "none";
- if(essais<=0){ document.getElementById('essaisText').innerText="🔒 Essais épuisés"; }
+ document.getElementById('payBtn').style.display = essais<=0? "block":"none";
+ if(essais<=0) document.getElementById('essaisText').innerText="🔒 Essais épuisés";
 }
 updateUI();
-
-let currentImg = null;
+let currentImg=null;
 document.getElementById('upload').addEventListener('change', e=>{
  let file=e.target.files[0]; if(!file) return;
- currentImg = document.createElement('img'); currentImg.src = URL.createObjectURL(file);
+ currentImg=document.createElement('img'); currentImg.src=URL.createObjectURL(file);
  document.getElementById('preview').innerHTML=""; document.getElementById('preview').appendChild(currentImg);
  document.getElementById('zone').innerHTML="✅ Photo prête"; document.getElementById('hdBtn').style.display="block";
  document.getElementById('dlBtn').style.display="none";
 });
-document.getElementById('hdBtn').onclick = ()=>{
+document.getElementById('hdBtn').onclick=()=>{
  if(essais<=0){ updateUI(); return; }
  let btn=document.getElementById('hdBtn'); btn.innerText="⏳ IA..."; btn.disabled=true;
  setTimeout(()=>{
@@ -84,20 +68,28 @@ document.getElementById('hdBtn').onclick = ()=>{
    setTimeout(()=>{ btn.innerText="✨ PASSER EN HD"; btn.disabled=false; },1200);
  },1000);
 };
-document.getElementById('dlBtn').onclick = ()=>{
- let canvas=document.createElement('canvas'); let ctx=canvas.getContext('2d');
- canvas.width=currentImg.naturalWidth*2; canvas.height=currentImg.naturalHeight*2;
- ctx.filter="contrast(1.4) saturate(1.3) brightness(1.05)";
- ctx.drawImage(currentImg,0,0,canvas.width,canvas.height);
- let a=document.createElement('a'); a.href=canvas.toDataURL('image/jpeg',1.0); a.download="C-Photo-HD-4K.jpg"; a.click();
+document.getElementById('dlBtn').onclick=()=>{
+ let c=document.createElement('canvas'),x=c.getContext('2d');
+ c.width=currentImg.naturalWidth*2; c.height=currentImg.naturalHeight*2;
+ x.filter="contrast(1.4) saturate(1.3) brightness(1.05)"; x.drawImage(currentImg,0,0,c.width,c.height);
+ let a=document.createElement('a'); a.href=c.toDataURL('image/jpeg',1.0); a.download="C-Photo-HD-4K.jpg"; a.click();
 };
-document.getElementById('shareBtn').onclick = ()=>{
-  let monLien = siteBase + "?ref=" + Date.now();
-  document.getElementById('refLink').innerText = monLien;
-  let msg = "🔥 J'ai rendu ma photo floue en HD 4K avec C Photo HD! Teste gratuit ici: " + monLien;
+document.getElementById('shareBtn').onclick=()=>{
+  essais++; localStorage.setItem('essais',essais); updateUI();
+  let lienMoche = siteBase + "?ref=" + Date.now();
+  document.getElementById('refLink').innerText = lienMoche;
+  let msg = "🔥 J'ai rendu ma photo floue en HD 4K avec C Photo HD! Teste gratuit ici: " + lienMoche;
   window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
 };
-document.getElementById('refLink').innerText = siteBase + "?ref=RaphMan";
+document.getElementById('refLink').innerText = siteBase + "?ref=" + Date.now();
+
+// LE CODE MAGIQUE QUI NETTOIE LE LIEN MOCHE
+let params = new URLSearchParams(window.location.search);
+if(params.get('ref')){
+  setTimeout(()=>{
+    window.history.replaceState({}, document.title, siteBase);
+  }, 1000);
+}
 </script>
 </body>
-  </html>
+</html>
